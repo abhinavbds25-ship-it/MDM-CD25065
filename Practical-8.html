@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Admission Portal - Student Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            padding: 25px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .error-message {
+            color: #d9534f;
+            font-size: 13px;
+            margin-top: 3px;
+            display: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #003d80;
+        }
+
+        .success-message {
+            color: #28a745;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h2>Student Registration</h2>
+        <form id="registrationForm" onsubmit="return validateForm(event)">
+            
+            <!-- Full Name -->
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" placeholder="Enter your full name">
+                <span class="error-message" id="nameError">Name is required.</span>
+            </div>
+
+            <!-- Email Address -->
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="text" id="email" placeholder="student@example.com">
+                <span class="error-message" id="emailError">Please enter a valid email address.</span>
+            </div>
+
+            <!-- Mobile Number -->
+            <div class="form-group">
+                <label for="mobile">Mobile Number</label>
+                <input type="text" id="mobile" placeholder="10-digit mobile number">
+                <span class="error-message" id="mobileError">Please enter a valid 10-digit mobile number.</span>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="At least 8 characters">
+                <span class="error-message" id="passwordError">Password must be at least 8 characters long.</span>
+            </div>
+
+            <button type="submit">Submit Registration</button>
+            <div id="successMsg" class="success-message"></div>
+        </form>
+    </div>
+
+    <script>
+        function validateForm(event) {
+            // Prevent default form submission
+            event.preventDefault();
+
+            // Get form values
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const mobile = document.getElementById('mobile').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            let isValid = true;
+
+            // Reset error messages and success notice
+            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+            document.getElementById('successMsg').textContent = '';
+
+            // 1. Validate Mandatory Field (Full Name)
+            if (fullName === "") {
+                showError('nameError');
+                isValid = false;
+            }
+
+            // 2. Validate Email Format
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailPattern.test(email)) {
+                showError('emailError');
+                isValid = false;
+            }
+
+            // 3. Validate Mobile Number (Exactly 10 digits)
+            const mobilePattern = /^[0-9]{10}$/;
+            if (!mobilePattern.test(mobile)) {
+                showError('mobileError');
+                isValid = false;
+            }
+
+            // 4. Validate Password Length (At least 8 characters)
+            if (password.length < 8) {
+                showError('passwordError');
+                isValid = false;
+            }
+
+            // If all fields are valid, succeed submission
+            if (isValid) {
+                document.getElementById('successMsg').textContent = "Registration successful!";
+                document.getElementById('registrationForm').reset();
+            }
+
+            return isValid;
+        }
+
+        function showError(elementId) {
+            document.getElementById(elementId).style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>
