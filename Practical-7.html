@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College FAQ Portal</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f8;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .faq {
+            background: white;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .question {
+            width: 100%;
+            padding: 18px 20px;
+            border: none;
+            background: white;
+            text-align: left;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question:hover {
+            background-color: #eef4ff;
+        }
+
+        .icon {
+            font-size: 22px;
+            color: #1e3a8a;
+        }
+
+        .answer {
+            display: none;
+            padding: 0 20px 18px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .answer.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>College Help Portal</h1>
+        <p class="subtitle">
+            Frequently Asked Questions
+        </p>
+
+        <div class="faq">
+            <button class="question">
+                How can I apply for admission?
+                <span class="icon">+</span>
+            </button>
+            <div class="answer">
+                Students can apply for admission through the official college
+                admission portal by filling out the application form and
+                submitting the required documents.
+            </div>
+        </div>
+
+        <div class="faq">
+            <button class="question">
+                How can I check my examination timetable?
+                <span class="icon">+</span>
+            </button>
+            <div class="answer">
+                The examination timetable is available on the college
+                website and student portal under the Examination section.
+            </div>
+        </div>
+
+        <div class="faq">
+            <button class="question">
+                Where can I find study materials?
+                <span class="icon">+</span>
+            </button>
+            <div class="answer">
+                Study materials can be accessed through the student portal,
+                department LMS, or the respective subject faculty.
+            </div>
+        </div>
+
+        <div class="faq">
+            <button class="question">
+                How can I contact the department?
+                <span class="icon">+</span>
+            </button>
+            <div class="answer">
+                Students can contact the department office during working
+                hours or use the official department email address.
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Select all question buttons
+        const questions = document.querySelectorAll(".question");
+
+        // Add event listener to every question
+        questions.forEach(function(question) {
+
+            question.addEventListener("click", function() {
+
+                // Find the answer related to the clicked question
+                const answer = question.nextElementSibling;
+
+                // Find the + / - icon
+                const icon = question.querySelector(".icon");
+
+                // Toggle answer visibility
+                answer.classList.toggle("active");
+
+                // Change icon
+                if (answer.classList.contains("active")) {
+                    icon.textContent = "-";
+                } else {
+                    icon.textContent = "+";
+                }
+
+            });
+
+        });
+    </script>
+
+</body>
+</html>
