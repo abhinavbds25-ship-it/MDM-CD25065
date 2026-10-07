@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Expense Tracker</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-100 min-h-screen font-sans">
+
+    <!-- Header -->
+    <header class="bg-gray-900 text-white shadow-lg">
+        <div class="max-w-6xl mx-auto px-4 py-5">
+            <h1 class="text-2xl md:text-3xl font-bold">
+                Personal Expense Tracker
+            </h1>
+            <p class="text-gray-400 text-sm mt-1">
+                Track and manage your daily expenses efficiently
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto px-4 py-8">
+
+        <!-- Summary Cards -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+
+            <!-- Total Expense -->
+            <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-600">
+                <p class="text-gray-500 text-sm font-medium">
+                    Total Expenses
+                </p>
+
+                <h2 id="totalExpense"
+                    class="text-3xl font-bold text-gray-900 mt-2">
+                    ₹0.00
+                </h2>
+            </div>
+
+            <!-- Number of Expenses -->
+            <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-600">
+                <p class="text-gray-500 text-sm font-medium">
+                    Total Transactions
+                </p>
+
+                <h2 id="transactionCount"
+                    class="text-3xl font-bold text-gray-900 mt-2">
+                    0
+                </h2>
+            </div>
+
+            <!-- Highest Expense -->
+            <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-red-600">
+                <p class="text-gray-500 text-sm font-medium">
+                    Highest Expense
+                </p>
+
+                <h2 id="highestExpense"
+                    class="text-3xl font-bold text-gray-900 mt-2">
+                    ₹0.00
+                </h2>
+            </div>
+
+        </section>
+
+
+        <!-- Add Expense Section -->
+        <section class="bg-white rounded-xl shadow-md p-6 mb-8">
+
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900">
+                        Add New Expense
+                    </h2>
+
+                    <p class="text-sm text-gray-500 mt-1">
+                        Enter your expense details below.
+                    </p>
+                </div>
+            </div>
+
+
+            <form id="expenseForm"
+                  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+                <!-- Description -->
+                <div>
+                    <label for="description"
+                           class="block text-sm font-medium text-gray-700 mb-2">
+                        Description
+                    </label>
+
+                    <input
+                        type="text"
+                        id="description"
+                        placeholder="e.g. Lunch"
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg
+                               focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+
+                <!-- Amount -->
+                <div>
+                    <label for="amount"
+                           class="block text-sm font-medium text-gray-700 mb-2">
+                        Amount (₹)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="amount"
+                        placeholder="e.g. 150"
+                        min="1"
+                        step="0.01"
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg
+                               focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+
+                <!-- Category -->
+                <div>
+                    <label for="category"
+                           class="block text-sm font-medium text-gray-700 mb-2">
+                        Category
+                    </label>
+
+                    <select
+                        id="category"
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg
+                               focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+                        <option value="">Select Category</option>
+                        <option value="Food">Food</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Education">Education</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Other">Other</option>
+
+                    </select>
+                </div>
+
+
+                <!-- Button -->
+                <div class="flex items-end">
+
+                    <button
+                        type="submit"
+                        class="w-full bg-blue-600 hover:bg-blue-700
+                               text-white font-semibold py-3 px-4
+                               rounded-lg transition duration-200">
+
+                        + Add Expense
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- Expense List -->
+        <section class="bg-white rounded-xl shadow-md overflow-hidden">
+
+            <!-- Section Header -->
+            <div class="p-6 border-b border-gray-200">
+
+                <div class="flex flex-col md:flex-row
+                            md:items-center md:justify-between gap-4">
+
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900">
+                            Expense History
+                        </h2>
+
+                        <p class="text-sm text-gray-500 mt-1">
+                            View and manage your expenses.
+                        </p>
+                    </div>
+
+
+                    <!-- Filter -->
+                    <div>
+
+                        <select
+                            id="filterCategory"
+                            class="px-4 py-2 border border-gray-300
+                                   rounded-lg focus:outline-none
+                                   focus:ring-2 focus:ring-blue-500">
+
+                            <option value="All">All Categories</option>
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Education">Education</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Other">Other</option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Desktop Table -->
+            <div class="hidden md:block overflow-x-auto">
+
+                <table class="w-full">
+
+                    <thead class="bg-gray-50">
+
+                        <tr>
+
+                            <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">
+                                Description
+                            </th>
+
+                            <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">
+                                Category
+                            </th>
+
+                            <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">
+                                Amount
+                            </th>
+
+                            <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">
+                                Date
+                            </th>
+
+                            <th class="text-center px-6 py-4 text-sm font-semibold text-gray-600">
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="expenseTableBody">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- Mobile List -->
+            <div id="mobileExpenseList"
+                 class="md:hidden p-4 space-y-4">
+            </div>
+
+
+            <!-- Empty Message -->
+            <div id="emptyMessage"
+                 class="text-center py-12">
+
+                <p class="text-gray-500">
+                    No expenses found.
+                </p>
+
+                <p class="text-sm text-gray-400 mt-1">
+                    Add your first expense above.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="text-center py-6 text-sm text-gray-500">
+        Personal Expense Tracker &copy; 2026
+    </footer>
+
+
+    <!-- JavaScript -->
+    <script>
+
+        // Get HTML elements
+        const expenseForm = document.getElementById("expenseForm");
+        const descriptionInput = document.getElementById("description");
+        const amountInput = document.getElementById("amount");
+        const categoryInput = document.getElementById("category");
+
+        const filterCategory = document.getElementById("filterCategory");
+
+        const expenseTableBody =
+            document.getElementById("expenseTableBody");
+
+        const mobileExpenseList =
+            document.getElementById("mobileExpenseList");
+
+        const emptyMessage =
+            document.getElementById("emptyMessage");
+
+        const totalExpense =
+            document.getElementById("totalExpense");
+
+        const transactionCount =
+            document.getElementById("transactionCount");
+
+        const highestExpense =
+            document.getElementById("highestExpense");
+
+
+        // Load expenses from LocalStorage
+        let expenses =
+            JSON.parse(localStorage.getItem("expenses")) || [];
+
+
+        // Save expenses to LocalStorage
+        function saveExpenses() {
+
+            localStorage.setItem(
+                "expenses",
+                JSON.stringify(expenses)
+            );
+
+        }
+
+
+        // Add new expense
+        expenseForm.addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+            const description =
+                descriptionInput.value.trim();
+
+            const amount =
+                parseFloat(amountInput.value);
+
+            const category =
+                categoryInput.value;
+
+
+            // Validation
+            if (!description || !amount || amount <= 0 || !category) {
+
+                alert("Please enter valid expense details.");
+
+                return;
+
+            }
+
+
+            // Create expense object
+            const expense = {
+
+                id: Date.now(),
+
+                description: description,
+
+                amount: amount,
+
+                category: category,
+
+                date: new Date().toLocaleDateString("en-IN")
+
+            };
+
+
+            // Add expense
+            expenses.push(expense);
+
+
+            // Save
+            saveExpenses();
+
+
+            // Reset form
+            expenseForm.reset();
+
+
+            // Update display
+            displayExpenses();
+
+        });
+
+
+        // Display expenses
+        function displayExpenses() {
+
+            const selectedCategory =
+                filterCategory.value;
+
+
+            let filteredExpenses = expenses;
+
+
+            // Apply category filter
+            if (selectedCategory !== "All") {
+
+                filteredExpenses =
+                    expenses.filter(
+                        expense =>
+                        expense.category === selectedCategory
+                    );
+
+            }
+
+
+            // Clear previous content
+            expenseTableBody.innerHTML = "";
+            mobileExpenseList.innerHTML = "";
+
+
+            // Show empty message
+            if (filteredExpenses.length === 0) {
+
+                emptyMessage.classList.remove("hidden");
+
+            } else {
+
+                emptyMessage.classList.add("hidden");
+
+            }
+
+
+            // Generate expense rows
+            filteredExpenses.forEach(expense => {
+
+                // Desktop table row
+                const row =
+                    document.createElement("tr");
+
+                row.className =
+                    "border-t border-gray-200 hover:bg-gray-50";
+
+
+                row.innerHTML = `
+
+                    <td class="px-6 py-4 font-medium text-gray-900">
+                        ${expense.description}
+                    </td>
+
+                    <td class="px-6 py-4">
+
+                        <span class="px-3 py-1 text-xs font-medium
+                                     rounded-full bg-blue-100 text-blue-700">
+
+                            ${expense.category}
+
+                        </span>
+
+                    </td>
+
+                    <td class="px-6 py-4 font-semibold text-gray-900">
+                        ₹${expense.amount.toFixed(2)}
+                    </td>
+
+                    <td class="px-6 py-4 text-gray-500">
+                        ${expense.date}
+                    </td>
+
+                    <td class="px-6 py-4 text-center">
+
+                        <button
+                            onclick="deleteExpense(${expense.id})"
+                            class="text-red-600 hover:text-red-800
+                                   font-medium">
+
+                            Delete
+
+                        </button>
+
+                    </td>
+
+                `;
+
+
+                expenseTableBody.appendChild(row);
+
+
+                // Mobile card
+                const card =
+                    document.createElement("div");
+
+                card.className =
+                    "border border-gray-200 rounded-lg p-4";
+
+
+                card.innerHTML = `
+
+                    <div class="flex justify-between items-start">
+
+                        <div>
+
+                            <h3 class="font-semibold text-gray-900">
+                                ${expense.description}
+                            </h3>
+
+                            <p class="text-sm text-gray-500 mt-1">
+                                ${expense.category}
+                            </p>
+
+                        </div>
+
+                        <span class="font-bold text-gray-900">
+                            ₹${expense.amount.toFixed(2)}
+                        </span>
+
+                    </div>
+
+                    <div class="flex justify-between items-center mt-4">
+
+                        <span class="text-xs text-gray-400">
+                            ${expense.date}
+                        </span>
+
+                        <button
+                            onclick="deleteExpense(${expense.id})"
+                            class="text-red-600 text-sm font-medium">
+
+                            Delete
+
+                        </button>
+
+                    </div>
+
+                `;
+
+
+                mobileExpenseList.appendChild(card);
+
+            });
+
+
+            // Update summary
+            updateSummary();
+
+        }
+
+
+        // Delete expense
+        function deleteExpense(id) {
+
+            const confirmed =
+                confirm("Are you sure you want to delete this expense?");
+
+
+            if (!confirmed) {
+
+                return;
+
+            }
+
+
+            expenses =
+                expenses.filter(
+                    expense => expense.id !== id
+                );
+
+
+            saveExpenses();
+
+            displayExpenses();
+
+        }
+
+
+        // Update summary cards
+        function updateSummary() {
+
+            const total =
+                expenses.reduce(
+                    (sum, expense) =>
+                    sum + expense.amount,
+                    0
+                );
+
+
+            const highest =
+                expenses.length > 0
+                    ? Math.max(
+                        ...expenses.map(
+                            expense => expense.amount
+                        )
+                    )
+                    : 0;
+
+
+            totalExpense.textContent =
+                `₹${total.toFixed(2)}`;
+
+
+            transactionCount.textContent =
+                expenses.length;
+
+
+            highestExpense.textContent =
+                `₹${highest.toFixed(2)}`;
+
+        }
+
+
+        // Filter expenses
+        filterCategory.addEventListener(
+            "change",
+            displayExpenses
+        );
+
+
+        // Initial display
+        displayExpenses();
+
+    </script>
+
+</body>
+</html>
